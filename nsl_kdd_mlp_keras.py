@@ -38,7 +38,7 @@ for column in x_columns:
     dtype = tf.float32
     if column in x_categorical_columns:
         dtype = tf.string
-    inputs[column] = tf.keras.Input(shape=(1,), name=str(column), dtype=dtype)
+    inputs[column] = keras.Input(shape=(1,), name=str(column), dtype=dtype)
 
 numeric_inputs = {}
 for name, input in inputs.items():
@@ -69,7 +69,7 @@ for name, input in inputs.items():
 
 preprocessed_inputs_cat = layers.Concatenate()(preprocessed_inputs)
 
-kdd_preprocessing = tf.keras.Model(inputs, preprocessed_inputs_cat)
+kdd_preprocessing = keras.Model(inputs, preprocessed_inputs_cat)
 
 kdd_train_dict = {}
 kdd_test_dict = {}
@@ -104,14 +104,14 @@ y_test_transformed = preprocess_label(y_test_raw)
 
 
 def kdd_model(preprocessing_head, inputs):
-    body = tf.keras.Sequential([
+    body = keras.Sequential([
         layers.Dense(41, activation='relu'),
         layers.Dense(20, activation='relu'),
         layers.Dense(24, activation='softmax')
     ])
     preprocessed_inputs = preprocessing_head(inputs)
     result = body(preprocessed_inputs)
-    model = tf.keras.Model(inputs, result)
+    model = keras.Model(inputs, result)
 
     model.compile(optimizer='adam',
                     loss='sparse_categorical_crossentropy',
