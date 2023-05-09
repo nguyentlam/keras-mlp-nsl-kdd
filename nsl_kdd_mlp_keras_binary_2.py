@@ -137,11 +137,11 @@ def kdd_model(preprocessing_head, inputs):
 
 kdd_model = kdd_model(kdd_preprocessing, inputs)
 
-kdd_model.fit(x=kdd_train_dict, y=y_train_transformed, batch_size=64, epochs=100)
+kdd_model.fit(x=kdd_train_dict, y=y_train_transformed, batch_size=64, epochs=10)
 
 predictions_train = kdd_model.predict(kdd_train_dict)
 train_re = mean_squared_error(y_train_transformed, predictions_train)
-threshold = train_re.mean() * 0.5
+threshold = np.mean(train_re) * 0.5
 print(threshold)
 
 kdd_model.evaluate(kdd_test_dict,  y_test_transformed, verbose=1) 
@@ -150,7 +150,7 @@ kdd_model.evaluate(kdd_test_dict,  y_test_transformed, verbose=1)
 
 predictions_test = kdd_model.predict(kdd_test_dict)
 test_re = mean_squared_error(y_test_transformed, predictions_test)
-test_label_predict = np.where(test_re <= threshold, 0, 1)
+test_label_predict = np.array(list(map(lambda x : 0 if x < threshold else 1, test_re)))
 test_acc = accuracy_score(y_test_transformed, test_label_predict)
 
 print(predictions_test[0])
