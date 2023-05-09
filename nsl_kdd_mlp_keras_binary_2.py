@@ -2,6 +2,8 @@ import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 from keras import layers
+from keras.metrics import mean_squared_error
+from sklearn.metrics import accuracy_score
 
 def parseNumber(s):
     try:
@@ -137,13 +139,21 @@ kdd_model = kdd_model(kdd_preprocessing, inputs)
 
 kdd_model.fit(x=kdd_train_dict, y=y_train_transformed, batch_size=64, epochs=100)
 
-test_loss, test_acc = kdd_model.evaluate(kdd_test_dict,  y_test_transformed, verbose=1) 
+predictions_train = kdd_model.predict(kdd_train_dict)
+train_re = mean_squared_error(y_train_transformed, predictions_train)
+threshold = train_re.mean() * 0.5
+print(threshold)
 
-print(test_acc)
+kdd_model.evaluate(kdd_test_dict,  y_test_transformed, verbose=1) 
 
-predictions = kdd_model.predict(kdd_test_dict)
 
-print(predictions[0])
+
+predictions_test = kdd_model.predict(kdd_test_dict)
+test_re = mean_squared_error(y_test_transformed, predictions_test)
+test_label_predict = np.where(test_re <= threshold, 0, 1)
+test_acc = accuracy_score(y_test_transformed, test_label_predict)
+
+print(predictions_test[0])
 # print(predictions[0].argmax())
 # print(label_categories[predictions[0].argmax()])
 
