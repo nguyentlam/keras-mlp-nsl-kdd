@@ -153,6 +153,7 @@ test_re = mean_squared_error(y_test_transformed, predictions_test)
 test_label_predict = np.array(list(map(lambda x : 0 if x < threshold else 1, test_re)))
 test_acc = accuracy_score(y_test_transformed, test_label_predict)
 
+print(test_acc)
 print(predictions_test[0])
 # print(predictions[0].argmax())
 # print(label_categories[predictions[0].argmax()])
